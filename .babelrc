@@ -1,0 +1,9 @@
+{
+  "presets": ["vue-app"],
+  "plugins": ["transform-object-rest-spread",["component", [
+    {
+      "libraryName": "element-ui",
+      "styleLibraryName": "theme-default"
+    }
+  ]],"transform-runtime"]
+}

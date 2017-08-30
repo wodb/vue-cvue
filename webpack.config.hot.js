@@ -10,7 +10,7 @@ module.exports = {
     },
     output:{
         path:path.resolve(__dirname,'dist'),
-        publicPath:'/dist',
+        publicPath:'/dist/',
         filename:'bundle.js'
     },
     module:{
@@ -33,7 +33,7 @@ module.exports = {
                             // 坑阿！！
                             css: ExtractTextPlugin.extract({
                                 fallback: "vue-style-loader",
-                                use: ["css-loader"]
+                                use: ["css-loader",'less-loader']
                             })
                         }
                     }
@@ -43,6 +43,12 @@ module.exports = {
                 use:ExtractTextPlugin.extract({
                     fallback: "style-loader",
                     use: ["css-loader"]
+                })
+            }, {
+                test:/\.less$/,
+                use:ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: ["css-loader",'less-loader']
                 })
             }, {
                 test: /\.(eot|woff|woff2|ttf)([\\?]?.*)$/,
@@ -58,20 +64,19 @@ module.exports = {
         alias: {
             vue:'vue/dist/vue.js'
         },
-        extensions:['.js','.vue','.css']
+        extensions:['.js','.vue']
     },
     plugins:[
         new webpack.DefinePlugin({
             'process.env.NODE_ENV':JSON.stringify("development")
         }),
         new webpack.HotModuleReplacementPlugin(),// 模块热替换
-        new webpack.optimize.OccurrenceOrderPlugin(),
+        // new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new HtmlWebpackPlugin({
-            template:'./src/template/index.html',
+            template:path.resolve('./src/template/index.html'),
             hash:true
         }),
-
         new ExtractTextPlugin("styles.css"),
     ]
 }

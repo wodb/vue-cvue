@@ -1,35 +1,17 @@
 <template>
-    <div class="box">
-        <el-carousel indicator-position="outside">
-            <el-carousel-item v-for="item in items" :key="item">
-                <h3>{{ item }}</h3>
-            </el-carousel-item>
-        </el-carousel>
-        <router-view></router-view>
+    <div class="container">
+        <headCom />
+        <Carouse/>
     </div>
 </template>
-<style>
-    .el-carousel__item h3 {
-        color: #475669;
-        font-size: 18px;
-        opacity: 0.75;
-        line-height: 300px;
-        margin: 0;
-        text-align: center;
-    }
-  
-    .el-carousel__item:nth-child(2n) {
-        background-color: #99a9bf;
-    }
-  
-    .el-carousel__item:nth-child(2n+1) {
-        background-color: #d3dce6;
-    }
+<style lang="less">
 </style>
 <script>
+    import headCom from './Components/Header/index'
+    import Carouse from './Components/carouse'
     export default {
-        data:function () {
-            return {items:['汉堡','肯德基','意大利面','披萨']}
+        components:{
+            headCom,Carouse
         }
     }
 </script>

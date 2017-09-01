@@ -1,19 +1,20 @@
 <template>
 	<div class="header">
-		<div class="header-top" :class="{'slideShow':isSlideVis}">
+		<div class="header-top base-bgc">
 			<!-- 左侧菜单 -->
 			<div class="search-menu" @click="toggleSlide">
 				<i class="el-icon-menu icon-base-color"></i>
 			</div>
 			<div class="search-input">
-				<el-input v-model="input" placeholder="搜索 歌曲/专辑/歌手"></el-input>
+				<el-input v-model="input" placeholder="搜索你感兴趣内容"></el-input>
 				1
 			</div>
 			<div class="search-button">
 				<i class="el-icon-search icon-base-color"></i>
 			</div>
 		</div>
-		<div class="silde-container" :class="{'slideHide':!isSlideVis}">
+		<div class="slide-over" v-show="!isSlideVis" @click.stop.prevent="toggleSlide"></div>
+		<div class="slide-container clearfix" :class="{'slideHide':isSlideVis}">
 			<el-row class="tac">
 			  <el-col :span="24">
 			    <h5 class="user-logo">
@@ -49,7 +50,7 @@
 		data(){
 			return {
 				input:'',
-				isSlideVis:false
+				isSlideVis:true
 			}
 		},
 		methods:{
@@ -69,7 +70,6 @@
 	.header{
 		overflow: hidden;
 		.header-top{
-			background-color: #000;
 			height: 40px;
 			display: flex;
 			line-height: 40px;
@@ -85,7 +85,7 @@
 				text-align: center;
 			}
 		}
-		.silde-container{
+		.slide-container {
 			width: 200px;
 			height: 100%;
 			background-color: #000;
@@ -93,14 +93,21 @@
 			left: 0;
 			top: 0;
 		    overflow-y: auto;
-		    z-index:13;
+		    z-index:14;
 		}
-		.slideHide{
-			transform: translateX(-200px);
-		};
-		.slideShow{
-			transform: translateX(200px);
-		};
+		.slideHide {
+			transform:translateX(-320px)
+		}
+		.slide-over{
+			width:100%;
+			background-color: #000;
+			opacity: .3;
+			position: fixed;
+			top:0;
+			right:0;
+		    z-index:13;
+			height:100%;
+		}
 		.user-logo {
 			width:100px;
 			margin:10px auto;

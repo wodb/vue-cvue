@@ -1,9 +1,12 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
 
 import App from './main'
+
+import store from './sotre/index'
+
+import {formatDate} from './config/index'
 
 import 'element-ui/lib/theme-default/index.css'
 import './style/base.less'
@@ -11,6 +14,9 @@ import './style/base.less'
 Vue.use(ElementUI)
 // 使用router
 Vue.use(VueRouter)
+
+// 添加一个过滤日期
+Vue.filter('dataFilter',formatDate)
 
 const Foo = { template: '<div>fo1o</div>' }
 const Bar = { 
@@ -38,7 +44,7 @@ let routes = [
 const router = new VueRouter({
     routes, //这里叫routes
     /*scrollBehavior(to,from,savedPosition) {
-    	console.log(to,from,savedPosition)
+    	console.log(to,from,savedPosition) //只有在html5history模式下生效
     }*/
 })
 router.beforeEach((to,from,next) => {
@@ -47,6 +53,7 @@ router.beforeEach((to,from,next) => {
 new Vue({
     el:'#app',
     // router,
+    store,
     template:'<App/>', // 渲染组件
     components:{App} // 增加组件
 })

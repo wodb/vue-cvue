@@ -2,11 +2,27 @@
 	margin:0;
 	padding:0;
 	transition: all .3s ease;
+	list-style:none;
 	font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 img{
 	width:100%;
 }
+body {
+	background: #f2f2f2;
+}
+.base-bgc{
+	background-color: #16181c;
+}
 .icon-base-color{
 	color: #fff;
+}
+.clearfix{
+	&:after{
+		content:'';
+		display:block;
+		height:0;
+		clear:both;
+		visibility:hidden;
+	}
 }

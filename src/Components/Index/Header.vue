@@ -7,10 +7,9 @@
 			</div>
 			<div class="search-input">
 				<el-input v-model="input" placeholder="搜索你感兴趣内容"></el-input>
-				1
 			</div>
 			<div class="search-button">
-				<i class="el-icon-search icon-base-color"></i>
+				<i class="el-icon-search icon-base-color" @click="todo"></i>
 			</div>
 		</div>
 		<div class="slide-over" v-show="!isSlideVis" @click.stop.prevent="toggleSlide"></div>
@@ -21,24 +20,11 @@
 			    	<img src="../../images/user-logo.jpg" alt="用户头像">
 					嘟嘟
 			    </h5>
-			    <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
-			      	<el-submenu index="1">
-			        	<template slot="title"><i class="el-icon-message"></i>导航一</template>
-				        <el-menu-item-group>
-					        <template slot="title">分组一</template>
-					        <el-menu-item index="1-1">选项1</el-menu-item>
-					        <el-menu-item index="1-2">选项2</el-menu-item>
-				        </el-menu-item-group>
-				        <el-menu-item-group title="分组2">
-				          	<el-menu-item index="1-3">选项3</el-menu-item>
-				        </el-menu-item-group>
-				        <el-submenu index="1-4">
-				          	<template slot="title">选项4</template>
-				          	<el-menu-item index="1-4-1">选项1</el-menu-item>
-				        </el-submenu>
-			      	</el-submenu>
-			      	<el-menu-item index="2"><i class="el-icon-menu"></i>github</el-menu-item>
-			      	<el-menu-item index="3"><i class="el-icon-setting"></i>暂定</el-menu-item>
+			    <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+			      	<el-menu-item index="1"><i class="el-icon-menu"></i>首页</el-menu-item>
+			      	<el-menu-item index="2"><i class="el-icon-plus"></i>发表</el-menu-item>
+			      	<el-menu-item index="3"><i class="el-icon-message"></i>消息</el-menu-item>
+			      	<el-menu-item index="4"><i class="el-icon-setting"></i>我的</el-menu-item>
 			    </el-menu>
 			  </el-col>
 			</el-row>
@@ -56,6 +42,9 @@
 		methods:{
 			toggleSlide() {
 				this.isSlideVis = !this.isSlideVis
+			},
+			todo() {
+				this.input = ''
 			},
 			handleOpen(key, keyPath) {
 		        console.log(key, keyPath);
@@ -79,6 +68,7 @@
 			}
 			.search-input{
 				flex: 7;
+				text-align: center;
 			}
 			.search-button{
 				flex: 1;

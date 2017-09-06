@@ -8,22 +8,29 @@
 			<li data-name="ask" :class="{'active':NavActive == 'ask'}">问答</li>
 			<li data-name="job" :class="{'active':NavActive == 'job'}">招聘</li>
 		</ul>
-		<div class="nav-content" @click.stop.prevent="getNavLists">
-			<ul>
-				<li v-for="item in 4">
+		<div class="nav-content">
+			<ul v-loading="loading2" element-loading-text="拼命加载中">
+				<li v-for="NavList in getNavLists">
 					<div class="media-graphic">
-						<div class="media-graphic-left"></div>
+						<div class="media-graphic-left">
+							<img :src="NavList.author.avatar_url" alt="">
+						</div>
 						<div class="media-graphic-middle">
-							<h3>xxxxxxx</h3>
-							<b>2017-02-01 15:30:30</b>
+							<h3>{{NavList.title}}</h3>
+							<b>{{NavList.create_at | formatDate}}</b>
 						</div>
 						<div class="media-graphic-right">
-							<span>精华</span>
-							<span>0/19</span>
+							<span>{{tabName(NavList.tab)}}</span>
+							<span>{{NavList.reply_count + '/' + NavList.visit_count}}</span>
 						</div>
 					</div>
 					<div class="default-content">
-						<p>xxxxxxxxxxxxxxxxxxxxx...<a href="javascript:;">详情>></a></p>
+						<p>
+							{{NavList.content.slice(0,10)}}...
+							<router-link :to="'/article/' + NavList.id">
+								详情&gt;&gt;
+							</router-link>
+						</p>
 					</div>
 					<div class="more-detail">
 						<span>收藏</span>
@@ -36,18 +43,44 @@
 	</div>
 </template>
 <script>
-	import {mapActions} from 'vuex'
+	import {mapGetters,mapActions} from 'vuex'
 	export default {
 		data() {
 			return {
-				NavActive:'all'
+				NavActive:'all',
+			}
+		},
+		computed:{
+			...mapGetters(['getNavLists','getNavListsCount']),
+			loading2:function () {
+				return this.getNavListsCount == 0
 			}
 		},
 		methods:{
-			...mapActions(['getNavLists']),
+			...mapActions(['HttpNavLists']),
 			TabClick (e) {
 				this.NavActive = e.target.getAttribute('data-name')
+				this.HttpNavLists({tab:this.NavActive,limit:'10',mdrender:'false'})
+			},
+			tabName:function (tab) {
+				switch (tab) {
+					case 'all':
+						return '全部'
+					case 'good':
+						return '精华'
+					case 'weex':
+						return 'weex'
+					case 'share':
+						return '分享'
+					case 'ask':
+						return '问答'
+					case 'job':
+						return '招聘'
+				}
 			}
+		},
+		created(){
+			this.HttpNavLists({tab:'all',page:'10',limit:'10',mdrender:'false'})
 		}
 	}
 </script>
@@ -68,6 +101,9 @@
 	}
 	.nav-content {
 		margin-top: .5625rem;
+		ul{
+			min-height:100px;
+		}
 		li{
 			background-color: #fff;
     		margin-bottom: .5625rem;
@@ -100,11 +136,11 @@
 		.default-content {
 			padding: 0 0 10px 0;
 			text-indent: 2rem;
-		}
-		.default-content a {
-			padding-left: 5px;
-		    text-decoration: none;
-		    color: #598abf;
+			a{
+				padding-left: 5px;
+			    text-decoration: none;
+			    color: #598abf;
+			}
 		}
 		.media-graphic {
 			display: flex;
@@ -114,34 +150,50 @@
 			height: 60px;
 			margin-left: 10px;
 			display: inline-block;
+		    padding: 5px;
+		    box-sizing: border-box;
+			img{
+				width: 100%;
+				height:100%;
+				border-radius:50%;
+			}
 		}
 		.media-graphic-middle {
 			display: inline-block;
 			flex: 1;
 			height: 60px;
-		}
-		.media-graphic-middle h3 {
-			color: #333;
-			font-weight: normal;
-			font-size: 22px;
-		}
-		.media-graphic-middle b {
-			font-weight: normal;
-		    color: #929292;
+			h3 {
+				color: #333;
+			    font-weight: normal;
+			    font-size: 16px;
+			    width: 185px;
+			    flex: 1;
+			    overflow: hidden;
+			    height: 30px;
+			    line-height: 30px;
+			    text-overflow: ellipsis;
+			    white-space: nowrap;
+			}
+			b{
+				font-weight: normal;
+		    	color: #929292;
+			}
 		}
 		.media-graphic-right {
 			display: inline-block;
 			width: 60px;
 			height: 60px;
-		}
-		.media-graphic-right span {
-			display: block;
-			text-align: center;
-			height: 30px;
-			line-height: 30px;
-		}
-		.media-graphic-right span:first-child{
-			color:#fd8880;
+			span{
+				display: block;
+				text-align: center;
+				height: 30px;
+				line-height: 30px;
+				overflow: hidden;
+    			text-overflow: ellipsis;
+				&:first-child{
+					color:#fd8880;
+				}
+			}
 		}
 	}
 	

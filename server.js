@@ -19,7 +19,10 @@ app.use(webpackDevMiddleWare(compiler,{
 
 app.use(webpackHotMiddleWare(compiler))
 
-app.listen('3000',(err) => {
+const server = app.listen('3000',(err) => {
+	const host = server.address().address
+  	const port = server.address().port
+  	console.log(host,port)
     if (err) throw err
     console.log(`server is port:3000`)
 })

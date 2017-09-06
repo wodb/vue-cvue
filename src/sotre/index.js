@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {ajax} from '../config/index'
+import {$httpGet} from '../config/index'
 
 Vue.use(Vuex)
 
@@ -12,29 +12,26 @@ let state = {
 }
 
 let getters = {
-
+	getNavLists:function (state) {
+		return state.navLists.data
+	},
+	getNavListsCount:function (state) {
+		return state.navLists.data.length
+	}
 }
 
 let mutations = {
 	navLists:function (state,datas) {
-		// state.navLists
+		state.navLists.data = datas.data
 	}
 }
 
 let actions = {
-	getNavLists:function () {
-		ajax({
-	        method: 'get',
-	        url: 'topics',
-	        data: {
-	            tabl:'all',
-	            page:'10',
-	            limit:'10',
-	            mdrender:false
-	        }
-	    })
+	HttpNavLists:function (context,config) {
+		context.commit('navLists',{data:[]})
+		$httpGet('topics',config)
 	    .then((res) => {
-	    	console.log(res)
+	    	context.commit('navLists',res)
 	    })
 	    .catch(err => {
 	    	console.log(err)
@@ -42,9 +39,12 @@ let actions = {
 	}
 }
 
+const debug = process.env.NODE_ENV !== 'production'
+
 export default new Vuex.Store({
 	state,
 	getters,
 	mutations,
-	actions
+	actions,
+	strict: debug
 })

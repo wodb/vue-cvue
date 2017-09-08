@@ -26,3 +26,56 @@ body {
 		visibility:hidden;
 	}
 }
+.header{
+	overflow: hidden;
+	.header-top{
+		height: 40px;
+		display: flex;
+		line-height: 40px;
+		.search-menu{
+			flex:1;
+			text-align: center;
+		}
+		.search-input{
+			flex: 7;
+			text-align: center;
+		}
+		.search-button{
+			flex: 1;
+			text-align: center;
+		}
+	}
+	.slide-container {
+		width: 200px;
+		height: 100%;
+		background-color: #000;
+		position: fixed;
+		left: 0;
+		top: 0;
+	    overflow-y: auto;
+	    z-index:14;
+	}
+	.slideHide {
+		transform:translateX(-320px)
+	}
+	.slide-over{
+		width:100%;
+		background-color: #000;
+		opacity: .3;
+		position: fixed;
+		top:0;
+		right:0;
+	    z-index:13;
+		height:100%;
+	}
+	.user-logo {
+		width:100px;
+		margin:10px auto;
+		color:#fff;
+		text-align:center;
+		img{
+			width:100px;
+			border-radius:50%;
+		}
+	}
+}

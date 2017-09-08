@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 
 import Index from '../Components/index/index'
 import Article from '../Components/Article/Article'
+import Login from '../Components/Login/index'
+import Me from '../Components/Me/index'
 
 // 使用router
 Vue.use(VueRouter)
@@ -20,8 +22,19 @@ const Bar = {
 	} 
 }
 let routes = [
-    {path:'/',component:Index},
-    {path:'/article/:id',component:Article}
+    {path:'/',component:Index,name:'vue-社区'},
+    {path:'/article/:id',component:Article,name:'vue-详情'},
+    {path:'/login',component:Login,name:'vue-登陆'},
+	{path:'/me',component:Me,name:'vue-我的',
+		beforeEnter: (to, from, next) => {
+			const isLogin = Boolean(localStorage.getItem('userinfo')) // true用户已登录， false用户未登录
+			if (!isLogin) {
+        		next({ path: '/login' })
+			}
+			next()
+      	}
+	},
+	{path:'*',redirect:'/'}
 ]
 
 const router = new VueRouter({
@@ -30,8 +43,8 @@ const router = new VueRouter({
     	console.log(to,from,savedPosition) //只有在html5history模式下生效
     }*/
 })
-router.beforeEach((to,from,next) => {
-	next()
+router.afterEach((to,from) => {
+	document.title = to.name
 })
 
 export default router

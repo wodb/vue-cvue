@@ -15,23 +15,32 @@
 		<div class="slide-over" v-show="!isSlideVis" @click.stop.prevent="toggleSlide"></div>
 		<div class="slide-container clearfix" :class="{'slideHide':isSlideVis}">
 			<el-row class="tac">
-			  <el-col :span="24">
-			    <h5 class="user-logo">
-			    	<img src="../../images/user-logo.jpg" alt="用户头像">
-					嘟嘟
-			    </h5>
-			    <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
-			      	<el-menu-item index="1"><i class="el-icon-menu"></i>首页</el-menu-item>
-			      	<el-menu-item index="2"><i class="el-icon-plus"></i>发表</el-menu-item>
-			      	<el-menu-item index="3"><i class="el-icon-message"></i>消息</el-menu-item>
-			      	<el-menu-item index="4"><i class="el-icon-setting"></i>我的</el-menu-item>
-			    </el-menu>
-			  </el-col>
+				<el-col :span="24">
+					<router-link v-if="userInfo.success" to="/me">
+					    <h5 class="user-logo">
+					    	<img :src="userInfo.avatar_url" alt="用户头像">
+							{{userInfo.loginname}}
+					    </h5>
+					</router-link>
+					<router-link v-else to="/login">
+						<h5 class="user-logo">
+					    	<img src="@static/images/user-logo.jpg" alt="用户头像">
+							点此登陆
+					    </h5>
+					</router-link>
+				    <el-menu default-active="1" class="el-menu-vertical-demo">
+				      	<el-menu-item index="1"><i class="el-icon-menu"></i><router-link to="/" tag="span">首页</router-link></el-menu-item>
+				      	<el-menu-item index="2"><i class="el-icon-plus"></i>发表</el-menu-item>
+				      	<el-menu-item index="3"><i class="el-icon-message"></i>消息</el-menu-item>
+				      	<el-menu-item index="4"><i class="el-icon-setting"></i><router-link to="/me" tag="span">我的</router-link></el-menu-item>
+				    </el-menu>
+			  	</el-col>
 			</el-row>
 		</div>
 	</div>
 </template>
 <script>
+	import {mapState} from 'vuex'
 	export default {
 		data(){
 			return {
@@ -39,74 +48,16 @@
 				isSlideVis:true
 			}
 		},
+		computed:{
+			...mapState(["userInfo"])
+		},
 		methods:{
 			toggleSlide() {
 				this.isSlideVis = !this.isSlideVis
 			},
 			todo() {
 				this.input = ''
-			},
-			handleOpen(key, keyPath) {
-		        console.log(key, keyPath);
-		    },
-		    handleClose(key, keyPath) {
-		        console.log(key, keyPath);
-		    }
+			}
 		}
 	}
 </script>
-<style lang="less">
-	.header{
-		overflow: hidden;
-		.header-top{
-			height: 40px;
-			display: flex;
-			line-height: 40px;
-			.search-menu{
-				flex:1;
-				text-align: center;
-			}
-			.search-input{
-				flex: 7;
-				text-align: center;
-			}
-			.search-button{
-				flex: 1;
-				text-align: center;
-			}
-		}
-		.slide-container {
-			width: 200px;
-			height: 100%;
-			background-color: #000;
-			position: fixed;
-			left: 0;
-			top: 0;
-		    overflow-y: auto;
-		    z-index:14;
-		}
-		.slideHide {
-			transform:translateX(-320px)
-		}
-		.slide-over{
-			width:100%;
-			background-color: #000;
-			opacity: .3;
-			position: fixed;
-			top:0;
-			right:0;
-		    z-index:13;
-			height:100%;
-		}
-		.user-logo {
-			width:100px;
-			margin:10px auto;
-			color:#fff;
-			text-align:center;
-			img{
-				width:100px;
-				border-radius:50%;
-			}
-		}
-	}
-</style>

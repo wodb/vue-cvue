@@ -1,5 +1,6 @@
 import axios from 'axios'
 import qs from 'qs'
+import { Message } from 'element-ui';
 
 //配置默认设置
 axios.defaults.baseURL = 'https://www.vue-js.com/api/v1/'
@@ -45,5 +46,7 @@ export const $httpPost = (url,data) => {
     		data:qs.stringify(data)
     	})
         .then(resquest => resquest.data)
-        .catch(err => err)
+        .catch(err => {
+        	Message.error('错了哦，这是一条错误消息')
+        })
 }

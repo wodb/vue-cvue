@@ -24,7 +24,7 @@
 					</router-link>
 					<router-link v-else to="/login">
 						<h5 class="user-logo">
-					    	<img src="@static/images/user-logo.jpg" alt="用户头像">
+					    	<img :src="require('@static/images/user-logo.jpg')" alt="用户头像">
 							点此登陆
 					    </h5>
 					</router-link>

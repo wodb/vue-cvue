@@ -1,16 +1,16 @@
 <template>
 	<el-carousel :interval="5000" arrow="always">
 	    <el-carousel-item>
-	    	<img src="./../../images/banner1.jpg" alt="">
+	    	<img :src="require('@static/images/banner1.jpg')" alt="">
 	    </el-carousel-item>
 	    <el-carousel-item>
-	    	<img src="./../../images/banner2.jpg" alt="">
+	    	<img :src="require('@static/images/banner2.jpg')" alt="">
 	    </el-carousel-item>
 	    <el-carousel-item>
-	    	<img src="./../../images/banner3.jpg" alt="">
+	    	<img :src="require('@static/images/banner3.jpg')" alt="">
 	    </el-carousel-item>
 	    <el-carousel-item>
-	    	<img src="./../../images/banner4.jpg" alt="">
+	    	<img :src="require('@static/images/banner4.jpg')" alt="">
 	    </el-carousel-item>
 	</el-carousel>
 </template>

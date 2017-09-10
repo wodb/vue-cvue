@@ -6,8 +6,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 module.exports = {
     devtool:'cheap-module-eval-source-map',
     entry:{
-        app:['webpack-hot-middleware/client','./src/app'],
-        assetsSubDirectory: 'static',
+        app:['webpack-hot-middleware/client','./src/app']
+        // assetsSubDirectory: 'static',
     },
     output:{
         path:path.resolve(__dirname,'dist'),
@@ -68,7 +68,8 @@ module.exports = {
         // 文件别名
         alias: {
             vue:'vue/dist/vue.js',
-			'@src':path.resolve(__dirname, 'src/'), //常用工具方法
+            '@src':path.resolve(__dirname, 'src/'), //常用工具方法
+			'@static':path.resolve(__dirname, 'static/'), //常用工具方法
         },
         extensions:['.js','.vue']
     },

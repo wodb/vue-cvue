@@ -19,7 +19,7 @@
 			<el-row>
 			  <el-col>
 			    <el-card :body-style="{ padding: '0px' }">
-			      <img src="/dist/static/images/hamburg.png" class="image">
+			      <img :src="require('@static/images/hamburg.png')" class="image">
 			      <div style="padding: 14px;">
 			        <span>好吃的汉堡</span>
 			        <div class="bottom clearfix">

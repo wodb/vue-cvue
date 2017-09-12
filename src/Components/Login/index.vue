@@ -3,7 +3,7 @@
 		<baseHead headerText="登陆"/>		
 		<div class="login-detail">
 			<div class="login1">
-				<el-input v-model="token" placeholder="Access Token"></el-input>
+				<el-input @input="updateToken" :value="token" placeholder="Access Token"></el-input>
 				<button type="button" @click="submitToken">确定</button>
 			</div>
 		</div>
@@ -14,19 +14,23 @@
 	import baseHead from '@src/Components/Common/Common'
 	export default {
 		data() {
-			return {fullscreenLoading:false,token:""}
+			return {fullscreenLoading:false}
 		},
 		components:{
 			baseHead
 		},
 		computed:{
+			...mapState(['token'])
 		},
 		methods:{
 			...mapActions(['receivePost']),
+			updateToken:function (value) {
+				this.$store.commit('setToken', value)
+			},
 			submitToken() {
 				if (!this.token) { 
 					return this.$message({
-          				message: '警告哦，老铁TOKEN？',
+          				message: '警告哦，TOKEN？',
           				type: 'warning'
         			})
 				}

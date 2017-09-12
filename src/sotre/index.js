@@ -4,14 +4,14 @@ import {$httpGet,$httpPost} from '../config/index'
 
 Vue.use(Vuex)
 
-let userInfo = (function () {
-	let userinfo = JSON.parse(localStorage.getItem('userinfo'))
-	return userinfo || {
+let defaultUser = {
 		avatar_url:'',
 		id:'',
 		success:false,
 		loginname:''
 	}
+let userInfo = (function (user = defaultUser) {
+	return JSON.parse(localStorage.getItem('userinfo'))||user
 })();
 
 let state = {
@@ -19,7 +19,8 @@ let state = {
 	navLists:{
 		data:[]
 	},
-	userInfo
+	userInfo,
+	token:''
 }
 
 let getters = {
@@ -37,6 +38,9 @@ let mutations = {
 	},
 	setuserInfo:function (state,data) {
 		state.userInfo = data
+	},
+	setToken:function (state,token) {
+		state.token = token
 	}
 }
 

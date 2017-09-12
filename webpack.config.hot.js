@@ -6,13 +6,14 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 module.exports = {
     devtool:'cheap-module-eval-source-map',
     entry:{
-        app:['webpack-hot-middleware/client','./src/app']
+        app:['webpack-hot-middleware/client','./src/app'],
+        vendor: ['vue', 'vuex','vue-router']
         // assetsSubDirectory: 'static',
     },
     output:{
         path:path.resolve(__dirname,'dist'),
         publicPath:'/dist/',
-        filename:'bundle.js'
+        filename:'[name]-bundle.js'
     },
     module:{
         rules:[{
@@ -76,6 +77,9 @@ module.exports = {
     plugins:[
         new webpack.DefinePlugin({
             'process.env.NODE_ENV':JSON.stringify("development")
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor' // 指定一个希望作为公共包的入口
         }),
         /*new webpack.LoaderOptionsPlugin({
             minimize: process.env.NODE_ENV === 'production',

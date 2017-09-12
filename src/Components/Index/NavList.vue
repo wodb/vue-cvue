@@ -20,7 +20,7 @@
 							<b>{{NavList.create_at | formatDate}}</b>
 						</div>
 						<div class="media-graphic-right">
-							<span>{{tabName(NavList.tab)}}</span>
+							<span>{{NavList.tab|tabName}}</span>
 							<span>{{NavList.reply_count + '/' + NavList.visit_count}}</span>
 						</div>
 					</div>
@@ -33,25 +33,39 @@
 						</p>
 					</div>
 					<div class="more-detail">
-						<span>收藏</span>
-						<span>评论</span>
-						<span>点赞</span>
+						<span @click="collect($event,NavList.id)">收藏</span>
+						<span @click="comment(NavList.id)">评论</span>
+						<span @click="clickStart">点赞</span>
 					</div>
 				</li>
 			</ul>
 		</div>
+		<el-dialog title="输入评论内容" :visible.sync="dialogVisible" size="tiny" :before-close="commentClose">
+		 	<span>
+		 		<el-input type="textarea" v-model="commentTextarea" placeholder="请输入内容"></el-input>
+	 		</span>
+		  	<span slot="footer" class="dialog-footer">
+		    	<el-button @click="commentClose">取 消</el-button>
+		    	<el-button type="primary" @click="commentSave">确 定</el-button>
+		  	</span>
+		</el-dialog>
 	</div>
 </template>
 <script>
-	import {mapGetters,mapActions} from 'vuex'
+	import {$httpPost} from '@src/config/index'
+	import {mapState,mapGetters,mapActions} from 'vuex'
+	
 	export default {
 		data() {
 			return {
 				NavActive:'all',
+				dialogVisible:false,
+				commentTextarea:''
 			}
 		},
 		computed:{
 			...mapGetters(['getNavLists','getNavListsCount']),
+			...mapState(['userInfo','token']),
 			loading2:function () {
 				return this.getNavListsCount == 0
 			}
@@ -62,21 +76,66 @@
 				this.NavActive = e.target.getAttribute('data-name')
 				this.HttpNavLists({tab:this.NavActive,limit:'10',mdrender:'false'})
 			},
-			tabName:function (tab) {
-				switch (tab) {
-					case 'all':
-						return '全部'
-					case 'good':
-						return '精华'
-					case 'weex':
-						return 'weex'
-					case 'share':
-						return '分享'
-					case 'ask':
-						return '问答'
-					case 'job':
-						return '招聘'
+			collect(event,id) {
+				if (!this.userInfo.success) {
+					this.$message({
+			          	message: '您还未登录，即将跳转登陆。',
+			          	type: 'warning'
+			        })
+			        setTimeout(() => {
+			        	this.$router.push('/login')
+			        },1000)
+			        return false
 				}
+				$httpPost('topic/collect',{accesstoken:this.token,topic_id:id})
+				.then(res => {
+					if (res.success) {
+						this.$message({
+							message:'收藏成功。',
+							type:'success'
+						})
+					}else {
+						this.$message({
+							message:'收藏失败。',
+							type:'warning'
+						})
+					}
+				})
+				.catch(err => {
+					this.$message({
+						message:err.message,
+						type:'warning'
+					})
+				})
+			},
+			comment() {
+				if (!this.userInfo.success) {
+					this.$message({
+			          	message: '您还未登录，即将跳转登陆。',
+			          	type: 'warning'
+			        })
+			        setTimeout(() => {
+			        	this.$router.push('/login')
+			        },1000)
+			        return false
+				}
+				// 开启评论框
+				this.dialogVisible = true
+			},
+			commentClose() {
+				this.dialogVisible = !this.dialogVisible
+				this.commentTextarea = ''
+			},
+			commentSave(id) {
+				// $httpPost(`topic/${id}/replies`,{accesstoken:this.token,})
+				this.dialogVisible = !this.dialogVisible
+				this.commentTextarea = ''
+			},
+			clickStart() {
+				this.$message({
+		         	 message: '恭喜你，点赞成功',
+		         	 type: 'success'
+		        });
 			}
 		},
 		created(){

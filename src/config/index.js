@@ -29,6 +29,23 @@ export const formatDate = (value) => {
 	}
 }
 
+export const tabName = (value) => {
+	switch (value) {
+		case 'all':
+			return '全部'
+		case 'good':
+			return '精华'
+		case 'weex':
+			return 'weex'
+		case 'share':
+			return '分享'
+		case 'ask':
+			return '问答'
+		case 'job':
+			return '招聘'
+	}
+}
+
 export const $httpGet = (url,params) => {
     return axios({
     		method:'get',
@@ -36,7 +53,6 @@ export const $httpGet = (url,params) => {
     		params
     	})
         .then(resquest => resquest.data)
-        .catch(err => err)
 }
 
 export const $httpPost = (url,data) => {
@@ -46,7 +62,4 @@ export const $httpPost = (url,data) => {
     		data:qs.stringify(data)
     	})
         .then(resquest => resquest.data)
-        .catch(err => {
-        	Message.error('错了哦，这是一条错误消息')
-        })
 }

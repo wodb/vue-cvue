@@ -52,7 +52,7 @@
 			text-align:center
 		}
 		.article-comment {
-			li{
+			ul>li{
 				margin-top:10px;
 				border-top:1px solid #ccc;
 				padding-top:10px;

@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "pub": "webpack --config webpack.config.pub.js"
   },
   "author": "",
   "license": "ISC",

@@ -57,6 +57,9 @@
 		created:function () {
 			this.getInfo(`user/${this.userInfo.loginname}`)
 			.then(res => {
+                if (res.error) {
+                    return false
+                }
 				this.myInfo = res.data
 				this.fullscreenLoading = false
 			})

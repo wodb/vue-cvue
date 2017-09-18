@@ -38,9 +38,11 @@
 		},
 		created() {
 			this.$store.dispatch('getInfo',`topic/${this.$route.params.id}`)
-			.then((res) => {
-				this.isreceive = true
-				this.article = res.data
+			.then(res => {
+                if (!res.error) {
+                    this.isreceive = true
+                    this.article = res.data
+                }
 			})
 		}
 	}

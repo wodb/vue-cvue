@@ -2,11 +2,28 @@ import axios from 'axios'
 import qs from 'qs'
 import { Message } from 'element-ui';
 
+const xhr = axios.create({
+	baseURL:'https://www.vue-js.com/api/v1/',
+    headers:{
+		post:{
+            'Content-Type':'application/x-www-form-urlencoded'
+		}
+	}
+})
 //配置默认设置
-axios.defaults.baseURL = 'https://www.vue-js.com/api/v1/'
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+xhr.interceptors.request.use(config => {
+    return config
+}, error => {
+    return Promise.reject(error)
+})
 
-export const formatDate = (value) => {
+xhr.interceptors.response.use(response => {
+    return response
+}, error => {
+    return Promise.resolve(error)
+})
+
+const formatDate = (value) => {
 	if (!value) return ''
 	var date = new Date(value)
 	var time = new Date().getTime() - date.getTime() 
@@ -29,7 +46,7 @@ export const formatDate = (value) => {
 	}
 }
 
-export const tabName = (value) => {
+const tabName = (value) => {
 	switch (value) {
 		case 'all':
 			return '全部'
@@ -46,20 +63,48 @@ export const tabName = (value) => {
 	}
 }
 
-export const $httpGet = (url,params) => {
-    return axios({
-    		method:'get',
-    		url,
-    		params
-    	})
-        .then(resquest => resquest.data)
+let checkStatus = (res) => {
+	if (res && res.status == 200 || res.status == 304 || res.status == 400) {
+		return res.data
+	}
+	Message({
+		type:'error',
+		message:res.message
+	})
+	return {
+		error:true
+	}
 }
 
-export const $httpPost = (url,data) => {
-    return axios({
-    		method:'post',
-    		url,
-    		data:qs.stringify(data)
-    	})
-        .then(resquest => resquest.data)
+
+const $Get = (url,params) => {
+	return xhr({
+        method:'get',
+        url,
+        params,
+        timeout: 10000,
+    })
+	.then(res => {
+		if (res && res.status == 200 || res.status == 304 || res.status == 400) {
+			return res.data
+		}
+		Message({
+			type:'error',
+			message:res.message
+		})
+		return {
+			error:true
+		}
+	})
 }
+
+const $Post = (url,params) => {
+	return xhr({
+        method:'POST',
+        url,
+        data:qs.stringify(params),
+        timeout: 10000,
+    })
+	.then(res => checkStatus(res))
+}
+export {$Get,$Post,tabName,formatDate}

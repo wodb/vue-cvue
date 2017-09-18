@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {$httpGet,$httpPost} from '../config/index'
+import {$Get,$Post} from '@src/config/index'
 
 Vue.use(Vuex)
 
@@ -8,7 +8,8 @@ let defaultUser = {
 		avatar_url:'',
 		id:'',
 		success:false,
-		loginname:''
+		loginname:'',
+		token:'',
 	}
 let userInfo = (function (user = defaultUser) {
 	return JSON.parse(localStorage.getItem('userinfo'))||user
@@ -19,8 +20,7 @@ let state = {
 	navLists:{
 		data:[]
 	},
-	userInfo,
-	token:''
+	userInfo
 }
 
 let getters = {
@@ -34,32 +34,26 @@ let getters = {
 
 let mutations = {
 	navLists:function (state,datas) {
-		state.navLists.data = datas.data
+		state.navLists.data.push(...(datas.data))
 	},
 	setuserInfo:function (state,data) {
 		state.userInfo = data
 	},
-	setToken:function (state,token) {
-		state.token = token
-	}
 }
 
 let actions = {
 	HttpNavLists:function (context,data) {
 		context.commit('navLists',{data:[]})
-		$httpGet('topics',data)
-	    .then((res) => {
+        $Get('topics',data)
+	    .then(res => {
+			if (res.error) {
+				return false
+			}
 	    	context.commit('navLists',res)
-	    })
-	    .catch(err => {
-	    	console.log(err)
 	    })
 	},
 	getInfo:function ({commit},url) {
-		return $httpGet(url)
-	},
-	receivePost:function ({commit},params) {
-		return $httpPost(params.url,{accesstoken:params.accesstoken})
+		return $Get(url)
 	}
 }
 const debug = process.env.NODE_ENV !== 'production'

@@ -8,8 +8,8 @@
 			<li data-name="ask" :class="{'active':NavActive == 'ask'}">问答</li>
 			<li data-name="job" :class="{'active':NavActive == 'job'}">招聘</li>
 		</ul>
-		<div class="nav-content">
-			<ul v-loading="loading2" element-loading-text="拼命加载中">
+		<div class="nav-content" ref="navDom">
+			<ul>
 				<li v-for="NavList in getNavLists">
 					<div class="media-graphic">
 						<div class="media-graphic-left">
@@ -38,9 +38,10 @@
 						<span @click="clickStart">点赞</span>
 					</div>
 				</li>
+				<li v-if="loading2" v-loading="loading2" element-loading-text="拼命加载中"></li>
 			</ul>
 		</div>
-		<el-dialog title="输入评论内容" :visible.sync="dialogVisible" size="tiny" :before-close="commentClose">
+		<el-dialog title="输入评论内容" :visible.sync="dialogVisible" size="large" :before-close="commentClose">
 		 	<span>
 		 		<el-input type="textarea" v-model="commentTextarea" placeholder="请输入内容"></el-input>
 	 		</span>
@@ -52,7 +53,7 @@
 	</div>
 </template>
 <script>
-	import {$httpPost} from '@src/config/index'
+	import {$Post} from '@src/config/index'
 	import {mapState,mapGetters,mapActions} from 'vuex'
 	
 	export default {
@@ -60,12 +61,14 @@
 			return {
 				NavActive:'all',
 				dialogVisible:false,
-				commentTextarea:''
+				commentTextarea:'',
+                topic_id:'',
+                loading3:true
 			}
 		},
 		computed:{
 			...mapGetters(['getNavLists','getNavListsCount']),
-			...mapState(['userInfo','token']),
+			...mapState(['userInfo']),
 			loading2:function () {
 				return this.getNavListsCount == 0
 			}
@@ -87,28 +90,24 @@
 			        },1000)
 			        return false
 				}
-				$httpPost('topic/collect',{accesstoken:this.token,topic_id:id})
+				$Post('topic/collect',{accesstoken:this.userInfo.token,topic_id:id})
 				.then(res => {
-					if (res.success) {
-						this.$message({
-							message:'收藏成功。',
-							type:'success'
-						})
-					}else {
-						this.$message({
-							message:'收藏失败。',
-							type:'warning'
-						})
+				    if(!res.error) {
+                        if (res.success) {
+                            this.$message({
+                                message:'收藏成功。',
+                                type:'success'
+                            })
+                        }else {
+                            this.$message({
+                                message:'收藏失败。',
+                                type:'warning'
+                            })
+                        }
 					}
 				})
-				.catch(err => {
-					this.$message({
-						message:err.message,
-						type:'warning'
-					})
-				})
 			},
-			comment() {
+			comment(topic_id) {
 				if (!this.userInfo.success) {
 					this.$message({
 			          	message: '您还未登录，即将跳转登陆。',
@@ -121,25 +120,50 @@
 				}
 				// 开启评论框
 				this.dialogVisible = true
+				// 把id存到data中
+				this.topic_id = topic_id
 			},
 			commentClose() {
 				this.dialogVisible = !this.dialogVisible
 				this.commentTextarea = ''
 			},
-			commentSave(id) {
-				// $httpPost(`topic/${id}/replies`,{accesstoken:this.token,})
-				this.dialogVisible = !this.dialogVisible
-				this.commentTextarea = ''
+			commentSave() {
+			    console.log(`token=${this.userInfo.token},id=${this.topic_id},内容信息=${this.commentTextarea}`)
+			    $Post(`topic/${this.topic_id}/replies`,{accesstoken:this.userInfo.token,content:this.commentTextarea})
+			    .then(res => {
+			    	if (res.error) return false
+		    		this.message({
+		    			type:'success',
+		    			message:'评论成功'
+		    		})
+					this.dialogVisible = !this.dialogVisible
+					this.commentTextarea = ''
+			    })
 			},
 			clickStart() {
 				this.$message({
 		         	 message: '恭喜你，点赞成功',
 		         	 type: 'success'
 		        });
+			},
+			scroll() {
+				console.log('我加载了')
+				// 获得要移动的dom元素
+				let nav = this.$refs.navDom
+				window.onscroll = function (e) {
+					let doc = document.body || document.documentElement
+					let scrollTop = doc.scrollTop||doc.scrollTop;
+					let docuemntHei = doc.scrollHeight
+					let navoffsetHei = nav.offsetTop
+					console.log(scrollTop+navoffsetHei,navoffsetHei,docuemntHei)
+				}
 			}
 		},
 		created(){
-			this.HttpNavLists({tab:'all',page:'10',limit:'10',mdrender:'false'})
+			this.HttpNavLists({tab:'all',limit:'10',mdrender:'false'})
+		},
+		mounted() {
+			this.scroll()
 		}
 	}
 </script>
@@ -164,6 +188,7 @@
 			min-height:100px;
 		}
 		li{
+			height:117px;
 			background-color: #fff;
     		margin-bottom: .5625rem;
 		    box-sizing: border-box;

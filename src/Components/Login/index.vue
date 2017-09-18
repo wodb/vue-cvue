@@ -3,7 +3,7 @@
 		<baseHead headerText="登陆"/>		
 		<div class="login-detail">
 			<div class="login1">
-				<el-input @input="updateToken" :value="token" placeholder="Access Token"></el-input>
+				<el-input v-model="token" placeholder="Access Token"></el-input>
 				<button type="button" @click="submitToken">确定</button>
 			</div>
 		</div>
@@ -12,21 +12,20 @@
 <script>
 	import {mapState,mapActions} from 'vuex'
 	import baseHead from '@src/Components/Common/Common'
+	import {$Post} from "@src/config/index"
 	export default {
 		data() {
-			return {fullscreenLoading:false}
+			return {
+			    fullscreenLoading:false,
+                token:''
+			}
 		},
 		components:{
 			baseHead
 		},
 		computed:{
-			...mapState(['token'])
 		},
 		methods:{
-			...mapActions(['receivePost']),
-			updateToken:function (value) {
-				this.$store.commit('setToken', value)
-			},
 			submitToken() {
 				if (!this.token) { 
 					return this.$message({
@@ -34,9 +33,10 @@
           				type: 'warning'
         			})
 				}
-				this.receivePost({url:'accesstoken',accesstoken:this.token})
+                $Post('accesstoken',{accesstoken:this.token})
 				.then(res => {
-					if (!res) return
+					if (res.error) return
+					res.token = this.token
 					localStorage.setItem('userinfo',JSON.stringify(res))
 					this.$store.commit('setuserInfo',res)
 					this.$router.back()

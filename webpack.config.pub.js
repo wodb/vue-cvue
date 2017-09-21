@@ -12,7 +12,8 @@ module.exports = {
     output:{
         path:path.resolve(__dirname,'dist'),
         publicPath:'/dist/',
-        filename:'[name]-bundle.js'
+        filename:'javascript/[name]-bundle.js',
+        chunkFilename: 'javascript/[name].[chunkhash:5].min.js'
     },
     module:{
         rules:[{
@@ -60,7 +61,16 @@ module.exports = {
                 use: ["file-loader"]
             },{
                 test: /\.(png|jpg|gif|svg)$/,
-                use: ['url-loader?limit=8192name=images/[hash:8].[name].[ext]']
+                use: [
+                    {
+                        loader:'url-loader',
+                        options: {
+                            limit: 8192,
+                            name:'images/[hash:8].[name].[ext]'
+                        }
+                    }
+                ],
+                
             }
         ]
     },
@@ -89,6 +99,9 @@ module.exports = {
                 warnings: false
             }
         }),
-        new ExtractTextPlugin("styles.css"),
+        new ExtractTextPlugin({
+            filename: 'css/[name].css',
+            allChunks: true
+        }),
     ]
 }

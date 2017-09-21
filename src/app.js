@@ -2,7 +2,7 @@ import Vue from 'vue'
 import ElementUI from 'element-ui'
 
 import App from './main'
-import store from './sotre/index'
+import store from './store/index'
 import router from './router/index'
 import {formatDate,tabName} from './config/index'
 

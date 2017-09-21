@@ -8,12 +8,12 @@ module.exports = {
     entry:{
         app:['webpack-hot-middleware/client','./src/app'],
         vendor: ['vue', 'vuex','vue-router']
-        // assetsSubDirectory: 'static',
     },
     output:{
         path:path.resolve(__dirname,'dist'),
         publicPath:'/dist/',
-        filename:'[name]-bundle.js'
+        filename:'[name]-bundle.js',
+        chunkFilename: '[name].[chunkhash:5].min.js'
     },
     module:{
         rules:[{
@@ -30,19 +30,6 @@ module.exports = {
                 exclude:/node_modules/,
                 use:[{
                     loader: "vue-loader",
-                    /*options:{
-                        loaders:{
-                            // 坑阿！！
-                            css: ExtractTextPlugin.extract({
-                                fallback: "vue-style-loader",
-                                use: ["css-loader"]
-                            })
-                            ,less: ExtractTextPlugin.extract({
-                                fallback: "vue-style-loader",
-                                use: ["css-loader",'less-loader']
-                            })
-                        }
-                    }*/
                 }] // 要写成vue-loader 不能vue(......)
             }, {
                 test:/\.css$/,
@@ -61,7 +48,15 @@ module.exports = {
                 use: ["file-loader"]
             },{
                 test: /\.(png|jpg|gif|svg)$/,
-                use: ['url-loader?limit=8192name=images/[hash:8].[name].[ext]']
+                use: [
+                    {
+                        loader:'url-loader',
+                        options: {
+                            limit: 8192,
+                            name:'images/[hash:8].[name].[ext]'
+                        }
+                    }
+                ]
             }
         ]
     },
@@ -81,16 +76,6 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor' // 指定一个希望作为公共包的入口
         }),
-        /*new webpack.LoaderOptionsPlugin({
-            minimize: process.env.NODE_ENV === 'production',
-            options: {
-                context: __dirname,
-                vue: {
-                    css: ExtractTextPlugin.extract({fallback: 'vue-style-loader', use: 'css-loader'}),
-                    less: ExtractTextPlugin.extract({fallback: 'vue-style-loader', use: ["css-loader",'less-loader']})
-                },
-            }
-        }),*/
         new webpack.HotModuleReplacementPlugin(),// 模块热替换
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
@@ -98,6 +83,9 @@ module.exports = {
             template:path.resolve('./src/template/index.html'),
             hash:true
         }),
-        new ExtractTextPlugin("styles.css"),
+        new ExtractTextPlugin({
+            filename: 'css/[name].css',
+            allChunks: true
+        }),
     ]
 }

@@ -29,10 +29,22 @@
 					    </h5>
 					</router-link>
 				    <el-menu default-active="1" class="el-menu-vertical-demo">
-				      	<el-menu-item index="1"><i class="el-icon-menu"></i><router-link to="/" tag="span">首页</router-link></el-menu-item>
-				      	<el-menu-item index="2"><i class="el-icon-plus"></i>发表</el-menu-item>
-				      	<el-menu-item index="3"><i class="el-icon-message"></i>消息</el-menu-item>
-				      	<el-menu-item index="4"><i class="el-icon-setting"></i><router-link to="/me" tag="span">我的</router-link></el-menu-item>
+				      	<el-menu-item index="1">
+				      		<i class="el-icon-menu"></i>
+				      		<router-link to="/" tag="span">首页</router-link>
+				      	</el-menu-item>
+				      	<el-menu-item index="2">
+				      		<i class="el-icon-plus"></i>
+				      		<router-link to="/create" tag="span">发表</router-link>
+				      	</el-menu-item>
+				      	<el-menu-item index="3">
+				      		<i class="el-icon-message"></i>
+				      		消息
+				      	</el-menu-item>
+				      	<el-menu-item index="4">
+				      		<i class="el-icon-setting"></i>
+				      		<router-link to="/me" tag="span">我的</router-link>
+				      	</el-menu-item>
 				    </el-menu>
 			  	</el-col>
 			</el-row>

@@ -14,7 +14,7 @@ const xhr = axios.create({
 xhr.interceptors.request.use(config => {
     return config
 }, error => {
-    return Promise.reject(error)
+    return Promise.resolve(error)
 })
 
 xhr.interceptors.response.use(response => {
@@ -64,7 +64,7 @@ const tabName = (value) => {
 }
 
 let checkStatus = (res) => {
-	if (res && res.status == 200 || res.status == 304 || res.status == 400) {
+	if (res && res.status == 200 || res.status == 304 || res.status == 400 || res.status == 422) {
 		return res.data
 	}
 	Message({
@@ -76,7 +76,6 @@ let checkStatus = (res) => {
 	}
 }
 
-
 const $Get = (url,params) => {
 	return xhr({
         method:'get',
@@ -84,18 +83,7 @@ const $Get = (url,params) => {
         params,
         timeout: 10000,
     })
-	.then(res => {
-		if (res && res.status == 200 || res.status == 304 || res.status == 400) {
-			return res.data
-		}
-		Message({
-			type:'error',
-			message:res.message
-		})
-		return {
-			error:true
-		}
-	})
+	.then(res => checkStatus(res))
 }
 
 const $Post = (url,params) => {
@@ -107,4 +95,52 @@ const $Post = (url,params) => {
     })
 	.then(res => checkStatus(res))
 }
-export {$Get,$Post,tabName,formatDate}
+/**
+ * 对sessionStorage操作
+ * @getItem  {[key]}         [获取session值]
+ * @save     {[key,value]}   [设置值]
+ * @clear  	 {[null]}  		 [清空值]
+ * @remove 	 {[key]} 	     [删除单个ITEM]
+ */
+const session = {
+	getItem(key) {
+		return sessionStorage.getItem(key)
+	},
+	save(key,value) {
+		sessionStorage.setItem(key,JSON.stringify(value))
+	},
+	clear() {
+		sessionStorage.clear()
+	},
+	remove(key) {
+		sessionStorage.removeItem(key)
+	}
+}
+
+/**
+ * 节流函数
+ * @param  {[Function]}  fn     [要执行的函数]
+ * @param  {[Number]}  delay    [延迟执行的毫秒数]
+ * @param  {[Number]}  mustRun  [至少多久执行一次]
+ * @return {[Function]}         [节流函数]
+ */
+const throttle = (fn, wait, mustRun) => {
+    let timeout;
+    let startTime = new Date();
+    return function() {
+        let context = this;
+        let args = arguments;
+        let curTime = new Date();
+
+        clearTimeout(timeout);
+        // 如果达到了规定的触发时间间隔，触发 handler
+        if (curTime - startTime >= mustRun) {
+            fn.apply(context, args);
+            startTime = curTime;
+            // 没达到触发间隔，重新设定定时器
+        } else {
+            timeout = setTimeout(fn, wait);
+        }
+    };
+};
+export {$Get,$Post,tabName,formatDate,session,throttle}
